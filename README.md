@@ -23,3 +23,7 @@ pip freeze > requirements.txt
 # To run front end server
 
 npm run dev
+
+# To activate tailwind watch
+
+npx tailwindcss -i ./frontend/src/index.css ./backend/static/css/styles.css -o ./output.css --watch
