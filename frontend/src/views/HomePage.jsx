@@ -46,7 +46,7 @@ function App() {
         updateUser={openEditModal}
         updateCallback={onUpdate}
       />
-      <button class="bg-blue-400 text-white" onClick={openCreateModal}>
+      <button className="bg-blue-400 text-white" onClick={openCreateModal}>
         Create New User
       </button>
       {isModalOpen && (
