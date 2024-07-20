@@ -1,6 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
 from config import app, db
 from models import User
+import os
 
 @app.route("/users", methods=["GET"])
 def get_users():
@@ -59,22 +60,15 @@ def delete_user(user_id):
 def home():
     return render_template("home.html")
 
+@app.route('/output.css')
+def output_css():
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    file_path = os.path.join(root_dir, 'output.css')
+    return send_file(file_path)
+
 
 if __name__ == "__app__":
     with app.app_context():
         db.create_all()
 
     app.run(debug=True)
-
-# @app.route("/")
-# def hello_world():
-#     return "<p>Hello, World!</p>"
-
-# @app.route("/home")
-# def home():
-#     return render_template("home.html")
-
-# create
-# - first name
-# - last name
-# - email
