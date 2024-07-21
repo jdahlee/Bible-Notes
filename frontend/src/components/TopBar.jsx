@@ -7,7 +7,7 @@ const TopBar = ({ ...props }) => {
         <a href="/" className="mr-3">
           Home
         </a>
-        <a href="/notes">Notes</a>
+        <a href="/notes">Profile</a>
       </div>
     </>
   );
