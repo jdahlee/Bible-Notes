@@ -1,7 +1,39 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
 from config import app, db
-from models import User
+from models import User, Note
 import os
+
+@app.route("/notes", methods=["GET"])
+def get_notes():
+    notes = Note.query.all()
+    json_notes = list(map(lambda x: x.to_json(), notes))
+    return jsonify({"notes": json_notes})
+
+@app.route("/create_note", methods=["POST"])
+def create_note():
+    title = request.json.get("title")
+    body = request.json.get("body")
+    source = request.json.get("source")
+    tags = request.json.get("tags", [])
+    
+    if not title or not body:
+        return jsonify({"message": "You must include a title and body"}), 400
+    
+    new_note = Note(
+        title=title,
+        body=body,
+        source=source,
+        tags=tags
+    )
+    
+    try:
+        db.session.add(new_note)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 400
+    
+    return jsonify({"message": "Note created", "note": new_note.to_json()}), 201
 
 @app.route("/users", methods=["GET"])
 def get_users():
