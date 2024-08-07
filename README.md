@@ -20,6 +20,14 @@ make sure you're in the backend directory
 
 pip freeze > requirements.txt
 
+# To create a migration
+
+flask db migrate -m ""
+
+# To run migration
+
+flask db upgrade
+
 # To run front end server
 
 npm run dev
