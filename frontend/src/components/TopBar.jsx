@@ -8,7 +8,7 @@ const TopBar = ({ ...props }) => {
           Home
         </a>
         <a href="/notes" className="mr-3">
-          Profile
+          Notes
         </a>
         <a href="/note-form">Note Form</a>
       </div>
