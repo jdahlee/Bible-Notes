@@ -14,6 +14,25 @@ function NotesPage() {
     setNotes(data.notes);
   };
 
+  const onDelete = async (id) => {
+    try {
+      const options = {
+        method: "DELETE",
+      };
+      const response = await fetch(
+        `http://localhost:5000/delete_note/${id}`,
+        options
+      );
+      if (response.status === 200) {
+        alert("Note deleted successfully");
+      } else {
+        console.error("Failed to delte");
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   useEffect(() => {
     generateNotesList();
   }, [notes]);
@@ -27,7 +46,13 @@ function NotesPage() {
           <div className="col-span-1">Tags: {note.tags}</div>
         </div>
         <div>Body: {note.body}</div>
-        <div>
+        <div className="flex mt-3">
+          <button
+            onClick={() => onDelete(note.id)}
+            className="bg-red-500 text-white px-2 py-1 rounded mr-5"
+          >
+            Delete
+          </button>
           <a href={`/Note-form?id=${note.id}`}>Link</a>
         </div>
       </div>
