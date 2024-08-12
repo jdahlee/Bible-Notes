@@ -9,6 +9,16 @@ def get_notes():
     json_notes = list(map(lambda x: x.to_json(), notes))
     return jsonify({"notes": json_notes})
 
+@app.route("/get_note/<int:note_id>", methods=["GET"])
+def get_note(note_id):
+    note = Note.query.get(note_id)
+
+    if not note:
+        return jsonify({"message": "Note not found"}), 404
+    
+    return jsonify({"note": note.to_json()}), 201
+
+
 @app.route("/create_note", methods=["POST"])
 def create_note():
     title = request.json.get("title")
