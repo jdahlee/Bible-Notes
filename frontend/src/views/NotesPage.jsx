@@ -27,6 +27,9 @@ function NotesPage() {
           <div className="col-span-1">Tags: {note.tags}</div>
         </div>
         <div>Body: {note.body}</div>
+        <div>
+          <a href={`/Note-form?id=${note.id}`}>Link</a>
+        </div>
       </div>
     ));
     setNotesList(notesList);
