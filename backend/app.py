@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
 from config import app, db
-from models import User, Note
+from models import User, Note, Tag, note_tag
 import os
 
 @app.route("/notes", methods=["GET"])
@@ -24,7 +24,7 @@ def create_note():
     title = request.json.get("title")
     body = request.json.get("body")
     source = request.json.get("source")
-    tags = request.json.get("tags", [])
+    tag_names = request.json.get("tags", [])
     
     if not title or not body:
         return jsonify({"message": "You must include a title and body"}), 400
@@ -33,8 +33,14 @@ def create_note():
         title=title,
         body=body,
         source=source,
-        tags=tags
     )
+
+    for tag_name in tag_names:
+        tag = Tag.query.filter_by(name=tag_name).first()
+        if not tag:
+            tag = Tag(name=tag_name)
+            db.session.add(tag)
+        new_note.tags.append(tag)
     
     try:
         db.session.add(new_note)
