@@ -3,6 +3,13 @@ from config import app, db
 from models import User, Note, Tag, note_tag
 import os
 
+@app.route("/filter_notes_tag/<tag_name>", methods=["GET"])
+def filter_notes_tag(tag_name):
+    tag = Tag.query.filter_by(name=tag_name).first()
+    if tag:
+        return [note.to_json() for note in tag.notes]
+    return []
+
 @app.route("/notes", methods=["GET"])
 def get_notes():
     notes = Note.query.all()
