@@ -38,7 +38,7 @@ class Note(db.Model):
             "createdAt": self.created_at.isoformat(),
             "title": self.title,
             "source": self.source,
-            "tags": self.tags,
+            "tags": [tag.name for tag in self.tags],
             "body": self.body
         }
     

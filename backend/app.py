@@ -16,7 +16,7 @@ def get_note(note_id):
     if not note:
         return jsonify({"message": "Note not found"}), 404
     
-    return jsonify({"note": note.to_json()}), 201
+    return jsonify({"note": note.to_json()}), 200
 
 
 @app.route("/create_note", methods=["POST"])
@@ -62,7 +62,19 @@ def update_note(note_id):
     note.title = data.get("title", note.title)
     note.body = data.get("body", note.body)
     note.source = data.get("source", note.source)
-    note.tags = data.get("tags", note.tags)
+
+    tag_names = request.json.get("tags", [])
+    for tag_name in tag_names:
+        tag = Tag.query.filter_by(name=tag_name).first()
+        if not tag:
+            tag = Tag(name=tag_name)
+            db.session.add(tag)
+        if not tag in note.tags:
+            note.tags.append(tag)
+
+    for tag in note.tags:
+        if not tag.name in tag_names:
+            note.tags.remove(tag)
 
     db.session.commit()
 
