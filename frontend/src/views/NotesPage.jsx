@@ -83,6 +83,7 @@ function NotesPage() {
           <div className="col-span-1">Title: {note.title}</div>
           <div className="col-span-1">Source: {note.source}</div>
           <div className="col-span-1">Tags: {note.tags}</div>
+          <div className="col-span-1">Date: {note.createdAt}</div>
         </div>
         <div>Body: {note.body}</div>
         <div className="flex mt-3">

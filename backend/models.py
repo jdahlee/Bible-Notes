@@ -3,6 +3,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.ext.mutable import MutableList
 from sqlalchemy import PickleType
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,7 +36,7 @@ class Note(db.Model):
     def to_json(self):
         return {
             "id": self.id,
-            "createdAt": self.created_at.isoformat(),
+            "createdAt": self.created_at.strftime("%H:%M %m-%d-%Y"),
             "title": self.title,
             "source": self.source,
             "tags": [tag.name for tag in self.tags],
