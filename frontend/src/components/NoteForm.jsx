@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import TagSelector from "./TagSelector";
+
 const NoteForm = () => {
   const [searchParams] = useSearchParams();
   const [title, setTitle] = useState("");
@@ -8,11 +10,15 @@ const NoteForm = () => {
   const [source, setSource] = useState("");
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
+  const [tagOptions, setTagOptions] = useState([]);
   const [queriedNote, setQueriedNote] = useState("");
+  const [tagSelector, setTagSelector] = useState();
 
   const id = searchParams.get("id");
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchTagOptions();
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -24,6 +30,33 @@ const NoteForm = () => {
     const response = await fetch("http://localhost:5000/get_note/" + id);
     const data = await response.json();
     setQueriedNote(data.note);
+  };
+
+  const fetchTagOptions = async () => {
+    const response = await fetch("http://localhost:5000/tags");
+    const data = await response.json();
+    setTagOptions(data.tags);
+  };
+
+  useEffect(() => {
+    let tagSelect;
+    if (tagOptions && tagOptions.length > 0) {
+      if (!tagOptions.includes("Create a new tag")) {
+        tagOptions.push("create a new tag");
+      }
+      tagSelect = (
+        <TagSelector
+          tagOptions={tagOptions}
+          currentTag={currentTag}
+          onTagChange={handleTagChange}
+        />
+      );
+    }
+    setTagSelector(tagSelect);
+  }, [tagOptions]);
+
+  const handleTagChange = (newTag) => {
+    setCurrentTag(newTag);
   };
 
   useEffect(() => {
@@ -133,6 +166,7 @@ const NoteForm = () => {
             <label htmlFor="tags" className="mb-1">
               Tags:
             </label>
+            {tagSelector}
             <div className="flex items-center">
               <input
                 type="text"

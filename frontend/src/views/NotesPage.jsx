@@ -1,18 +1,48 @@
 import React, { useEffect, useState } from "react";
 
+import TagSelector from "../components/TagSelector";
+
 function NotesPage() {
   const [notes, setNotes] = useState([]);
   const [notesList, setNotesList] = useState([]);
   const [tag, setTag] = useState("");
+  const [tagOptions, setTagOptions] = useState([]);
+  const [tagSelector, setTagSelector] = useState();
 
   useEffect(() => {
     fetchNotes();
+    fetchTagOptions();
   }, []);
 
   const fetchNotes = async () => {
     const response = await fetch("http://localhost:5000/notes");
     const data = await response.json();
     setNotes(data.notes);
+    setTag("");
+  };
+
+  const fetchTagOptions = async () => {
+    const response = await fetch("http://localhost:5000/tags");
+    const data = await response.json();
+    setTagOptions(data.tags);
+  };
+
+  useEffect(() => {
+    let tagSelect;
+    if (tagOptions && tagOptions.length > 0) {
+      tagSelect = (
+        <TagSelector
+          tagOptions={tagOptions}
+          currentTag={tag}
+          onTagChange={handleTagChange}
+        />
+      );
+    }
+    setTagSelector(tagSelect);
+  }, [tagOptions, tag]);
+
+  const handleTagChange = (newTag) => {
+    setTag(newTag);
   };
 
   const filterNotesByTag = async () => {
@@ -74,13 +104,7 @@ function NotesPage() {
       <h1 className="bg-red-400">Notes Page</h1>
       <div className="flex mt-3">
         <label className="">Tag:</label>
-        <input
-          type="text"
-          id="tag"
-          value={tag ?? ""}
-          onChange={(e) => setTag(e.target.value)}
-          className="border rounded p-2"
-        />
+        {tagSelector}
         <button
           onClick={() => filterNotesByTag()}
           type="button"
