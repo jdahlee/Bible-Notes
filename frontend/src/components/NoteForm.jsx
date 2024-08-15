@@ -125,81 +125,88 @@ const NoteForm = () => {
     <>
       <div className="p-5">
         <form onSubmit={onSubmit} className="space-y-4">
-          <div className="flex flex-col">
-            <label htmlFor="title" className="mb-1">
-              Title:
-            </label>
-            <input
-              type="text"
-              id="title"
-              value={title ?? ""}
-              onChange={(e) => setTitle(e.target.value)}
-              className="border rounded p-2"
-              required
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="source" className="mb-1">
-              Source:
-            </label>
-            <input
-              type="text"
-              id="source"
-              value={source ?? ""}
-              onChange={(e) => setSource(e.target.value)}
-              className="border rounded p-2"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="body" className="mb-1">
-              Body:
-            </label>
-            <textarea
-              id="body"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              className="border rounded p-2 h-32"
-              required
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="tags" className="mb-1">
-              Tags:
-            </label>
-            {tagSelector}
-            <div className="flex items-center">
+          <div className="grid grid-cols-12">
+            <div className="col-span-4">
+              <label htmlFor="title" className="mb-1">
+                Title:
+              </label>
               <input
                 type="text"
-                id="tags"
-                value={currentTag ?? ""}
-                onChange={(e) => setCurrentTag(e.target.value)}
-                className="border rounded p-2 flex-grow"
+                id="title"
+                value={title ?? ""}
+                onChange={(e) => setTitle(e.target.value)}
+                className="border rounded ml-2 mr-2 p-2 w-5/6"
+                required
               />
-              <button
-                onClick={handleAddTag}
-                type="button"
-                className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
-              >
-                Add Tag
-              </button>
             </div>
-            <div className="mt-2 flex flex-wrap">
-              {tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-200 px-2 py-1 rounded mr-2 mb-2 flex items-center"
-                >
-                  {tag}
+            <div className="col-span-3">
+              <label htmlFor="source" className="mb-1">
+                Source:
+              </label>
+              <input
+                type="text"
+                id="source"
+                value={source ?? ""}
+                onChange={(e) => setSource(e.target.value)}
+                className="border rounded ml-2 p-2"
+              />
+            </div>
+            <div className="col-span-5">
+              <div className="flex">
+                <label htmlFor="tags" className="mb-1">
+                  Tags:
+                </label>
+                <span className="ml-2">{tagSelector}</span>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    id="tags"
+                    value={currentTag ?? ""}
+                    onChange={(e) => setCurrentTag(e.target.value)}
+                    className="border rounded ml-2 p-2 flex-grow"
+                  />
                   <button
-                    onClick={() => handleRemoveTag(tag)}
+                    onClick={handleAddTag}
                     type="button"
-                    className="ml-2 text-red-500 font-bold"
+                    className="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
                   >
-                    ×
+                    Add Tag
                   </button>
-                </span>
-              ))}
+                </div>
+              </div>
+              <div className="mt-2 flex flex-wrap">
+                {tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-gray-200 px-2 py-1 rounded mr-1 mb-1 flex items-center text-xs"
+                  >
+                    {tag}
+                    <button
+                      onClick={() => handleRemoveTag(tag)}
+                      type="button"
+                      className="ml-2 text-red-500 font-bold"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
+          </div>
+          <div className="flex">
+            <div className="w-5/6">
+              <label htmlFor="body" className="block">
+                Body:
+              </label>
+              <textarea
+                id="body"
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                className="border rounded p-2 h-32 w-5/6"
+                required
+              />
+            </div>
+            <div>Tools</div>
           </div>
           <button
             type="submit"
