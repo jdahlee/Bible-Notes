@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 function NotesPage() {
   const [notes, setNotes] = useState([]);
   const [notesList, setNotesList] = useState([]);
+  const [tag, setTag] = useState("");
 
   useEffect(() => {
     fetchNotes();
@@ -12,6 +13,14 @@ function NotesPage() {
     const response = await fetch("http://localhost:5000/notes");
     const data = await response.json();
     setNotes(data.notes);
+  };
+
+  const filterNotesByTag = async () => {
+    const response = await fetch(
+      "http://localhost:5000/filter_notes_tag/" + tag
+    );
+    const data = await response.json();
+    setNotes(data);
   };
 
   const onDelete = async (id) => {
@@ -63,6 +72,30 @@ function NotesPage() {
   return (
     <>
       <h1 className="bg-red-400">Notes Page</h1>
+      <div className="flex mt-3">
+        <label className="">Tag:</label>
+        <input
+          type="text"
+          id="tag"
+          value={tag ?? ""}
+          onChange={(e) => setTag(e.target.value)}
+          className="border rounded p-2"
+        />
+        <button
+          onClick={() => filterNotesByTag()}
+          type="button"
+          className="ml-2 bg-green-500 font-bold"
+        >
+          filter
+        </button>
+        <button
+          onClick={() => fetchNotes()}
+          type="button"
+          className="ml-2 bg-green-500 font-bold"
+        >
+          reset
+        </button>
+      </div>
       <div className="p-5">{notesList}</div>
     </>
   );
