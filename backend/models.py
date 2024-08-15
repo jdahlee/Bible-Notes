@@ -49,7 +49,7 @@ class Tag(db.Model):
     def __repr__(self):
         return f'<Tag {self.name}>'
 
-    def to_dict(self):
+    def to_json(self):
         return {
             'id': self.id,
             'name': self.name
