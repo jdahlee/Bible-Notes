@@ -41,9 +41,6 @@ const NoteForm = () => {
   useEffect(() => {
     let tagSelect;
     if (tagOptions && tagOptions.length > 0) {
-      if (!tagOptions.includes("Create a new tag")) {
-        tagOptions.push("create a new tag");
-      }
       tagSelect = (
         <TagSelector
           tagOptions={tagOptions}
@@ -123,7 +120,7 @@ const NoteForm = () => {
 
   return (
     <>
-      <div className="p-5">
+      <div className="p-5 bg-sky-100 h-screen">
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-12">
             <div className="col-span-4">
@@ -151,46 +148,46 @@ const NoteForm = () => {
                 className="border rounded ml-2 p-2"
               />
             </div>
-            <div className="col-span-5">
-              <div className="flex">
-                <label htmlFor="tags" className="mb-1">
-                  Tags:
-                </label>
-                <span className="ml-2">{tagSelector}</span>
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    id="tags"
-                    value={currentTag ?? ""}
-                    onChange={(e) => setCurrentTag(e.target.value)}
-                    className="border rounded ml-2 p-2 flex-grow"
-                  />
+          </div>
+          <div className="flex">
+            <div className="flex">
+              <label htmlFor="tags" className="mb-1">
+                Tags:
+              </label>
+              <span className="ml-2">{tagSelector}</span>
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  id="tags"
+                  value={currentTag ?? ""}
+                  onChange={(e) => setCurrentTag(e.target.value)}
+                  className="border rounded p-2 flex-grow"
+                />
+                <button
+                  onClick={handleAddTag}
+                  type="button"
+                  className="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+            <div className="ml-2 flex flex-wrap items-center">
+              {tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-200 px-2 py-1 rounded mr-1 mb-1 h-fit flex items-center text-xs"
+                >
+                  {tag}
                   <button
-                    onClick={handleAddTag}
+                    onClick={() => handleRemoveTag(tag)}
                     type="button"
-                    className="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+                    className="ml-2 text-red-500 font-bold"
                   >
-                    Add Tag
+                    ×
                   </button>
-                </div>
-              </div>
-              <div className="mt-2 flex flex-wrap">
-                {tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-gray-200 px-2 py-1 rounded mr-1 mb-1 flex items-center text-xs"
-                  >
-                    {tag}
-                    <button
-                      onClick={() => handleRemoveTag(tag)}
-                      type="button"
-                      className="ml-2 text-red-500 font-bold"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
+                </span>
+              ))}
             </div>
           </div>
           <div className="flex">

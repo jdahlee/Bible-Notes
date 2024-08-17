@@ -37,7 +37,9 @@ function HomePage() {
             <h1>Recent Notes</h1>
           </div>
           <div className="flex justify-center mt-2">
-            <button>New Note</button>
+            <a href="/note-form" className="text-black">
+              <button>New Note</button>
+            </a>
           </div>
         </div>
         <div className="col-span-3 pt-3 bg-gray-200 h-screen">
