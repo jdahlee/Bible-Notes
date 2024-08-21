@@ -19,9 +19,9 @@ def get_passage(url_passage):
         'q': passage,
         'include-headings': False,
         'include-footnotes': False,
-        'include-verse-numbers': False,
+        'include-verse-numbers': True,
         'include-short-copyright': False,
-        'include-passage-references': True
+        'include-passage-references': False
     }
 
     headers = {
@@ -31,7 +31,7 @@ def get_passage(url_passage):
     response = requests.get(api_url, params=params, headers=headers)
     passages = response.json()['passages']
 
-    return jsonify({"passage" : passages, "array" : passage_array, "url" : passage})
+    return jsonify({"passage" : passages})
 
 @app.route("/tags", methods=["GET"])
 def get_tags():
