@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, send_file
 from config import app, db
-from models import User, Note, Tag, note_tag
+from models import User, Note, Tag, Source
 import os
 
 @app.route("/tags", methods=["GET"])
@@ -37,7 +37,7 @@ def get_note(note_id):
 def create_note():
     title = request.json.get("title")
     body = request.json.get("body")
-    source = request.json.get("source")
+    source_name = request.json.get("source")
     tag_names = request.json.get("tags", [])
     
     if not title or not body:
@@ -46,8 +46,14 @@ def create_note():
     new_note = Note(
         title=title,
         body=body,
-        source=source,
     )
+
+    if source_name:
+        source = Source.query.filter_by(name=source_name).first()
+        if not source:
+            source = Source(name=source_name)
+            db.session.add(source)
+        new_note.source = source
 
     for tag_name in tag_names:
         tag = Tag.query.filter_by(name=tag_name).first()
@@ -75,7 +81,15 @@ def update_note(note_id):
     data = request.json
     note.title = data.get("title", note.title)
     note.body = data.get("body", note.body)
-    note.source = data.get("source", note.source)
+
+    source_name = data.get("source", note.source)
+
+    if source_name:
+        source = Source.query.filter_by(name=source_name).first()
+        if not source:
+            source = Source(name=source_name)
+            db.session.add(source)
+        note.source = source
 
     tag_names = request.json.get("tags", [])
     for tag_name in tag_names:
