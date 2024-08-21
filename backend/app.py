@@ -2,6 +2,36 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify, s
 from config import app, db
 from models import User, Note, Tag, Source
 import os
+import requests
+
+@app.route("/get_passage/<url_passage>", methods=["GET"])
+def get_passage(url_passage):
+
+    passage_array = url_passage.split('.')
+    passage = passage_array[0] + passage_array[1]
+    if (len(passage_array) == 3):
+        passage += '-' + passage_array[2]
+
+    api_key = os.environ['ESV_API_KEY']
+    api_url = 'https://api.esv.org/v3/passage/text/'
+
+    params = {
+        'q': passage,
+        'include-headings': False,
+        'include-footnotes': False,
+        'include-verse-numbers': False,
+        'include-short-copyright': False,
+        'include-passage-references': True
+    }
+
+    headers = {
+        'Authorization': 'Token %s' % api_key
+    }
+
+    response = requests.get(api_url, params=params, headers=headers)
+    passages = response.json()['passages']
+
+    return jsonify({"passage" : passages, "array" : passage_array, "url" : passage})
 
 @app.route("/tags", methods=["GET"])
 def get_tags():
