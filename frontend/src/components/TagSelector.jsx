@@ -1,7 +1,6 @@
 import React from "react";
 
 const TagSelector = ({ tagOptions, currentTag, onTagChange }) => {
-  console.log("currentTag", currentTag);
   return (
     <div className="p-4">
       <select
