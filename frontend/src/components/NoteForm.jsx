@@ -13,6 +13,11 @@ const NoteForm = () => {
   const [tagOptions, setTagOptions] = useState([]);
   const [queriedNote, setQueriedNote] = useState("");
   const [tagSelector, setTagSelector] = useState();
+  const [currentPassage, setCurrentPassage] = useState({
+    book: "",
+    start: "",
+    end: "",
+  });
 
   const id = searchParams.get("id");
 
@@ -36,6 +41,36 @@ const NoteForm = () => {
     const response = await fetch("http://localhost:5000/tags");
     const data = await response.json();
     setTagOptions(data.tags);
+  };
+
+  const fetchPassage = async () => {
+    let passageUrl = currentPassage["book"] + "." + currentPassage["start"];
+    if (currentPassage["end"]) {
+      passageUrl += "." + currentPassage["end"];
+    }
+    const response = await fetch(
+      "http://localhost:5000/get_passage/" + passageUrl
+    );
+    const data = await response.json();
+    console.log(data);
+    try {
+      await window.navigator.clipboard.writeText(data.passage);
+      setCurrentPassage((prevData) => ({
+        ["book"]: "",
+        ["start"]: "",
+        ["end"]: "",
+      }));
+    } catch (err) {
+      console.error("Unable to copy to clipboard.", err);
+      alert("Copy to clipboard failed.");
+    }
+  };
+
+  const handleInputChange = (key, value) => {
+    setCurrentPassage((prevData) => ({
+      ...prevData,
+      [key]: value,
+    }));
   };
 
   useEffect(() => {
@@ -190,8 +225,8 @@ const NoteForm = () => {
               ))}
             </div>
           </div>
-          <div className="flex">
-            <div className="w-5/6">
+          <div className="grid grid-cols-3">
+            <div className="col-span-2 p-3">
               <label htmlFor="body" className="block">
                 Body:
               </label>
@@ -199,11 +234,47 @@ const NoteForm = () => {
                 id="body"
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                className="border rounded p-2 h-32 w-5/6"
+                className="border rounded p-2 min-h-96 w-full"
                 required
               />
             </div>
-            <div>Tools</div>
+            <div className="col-span-1 bg-gray-200 p-3 h-96">
+              <h1 className="font-semibold text-center mb-2">Tools</h1>
+              <div className="flex space-x-1 mb-2">
+                <input
+                  type="text"
+                  id="passage-book"
+                  value={currentPassage.book ?? "Book"}
+                  placeholder={currentPassage.book ? "" : "Book"}
+                  onChange={(e) => handleInputChange("book", e.target.value)}
+                  className="border rounded p-2 w-48 h-14"
+                />
+                <input
+                  type="text"
+                  id="passage-start"
+                  value={currentPassage.start ?? ""}
+                  placeholder={currentPassage.start ? "" : "ch:ver"}
+                  onChange={(e) => handleInputChange("start", e.target.value)}
+                  className="border rounded p-2 w-16 h-14"
+                />
+                <div className="content-center font-bold text-lg">-</div>
+                <input
+                  type="text"
+                  id="passage-end"
+                  value={currentPassage.end ?? ""}
+                  placeholder={currentPassage.end ? "" : "ch:ver"}
+                  onChange={(e) => handleInputChange("end", e.target.value)}
+                  className="border rounded p-2 w-16 h-14"
+                />
+              </div>
+              <button
+                onClick={fetchPassage}
+                type="button"
+                className="ml-2 bg-blue-500 text-white px-2 py-1 rounded"
+              >
+                Look Up
+              </button>
+            </div>
           </div>
           <button
             type="submit"
