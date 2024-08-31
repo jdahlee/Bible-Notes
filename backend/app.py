@@ -4,6 +4,12 @@ from models import User, Note, Tag, Source
 import os
 import requests
 
+@app.route("/sources", methods=["GET"])
+def get_sources():
+    sources = Source.query.all()
+    json_sources = list(map(lambda x: x.name, sources))
+    return jsonify({"sources": json_sources})
+
 @app.route("/get_passage/<url_passage>", methods=["GET"])
 def get_passage(url_passage):
 
