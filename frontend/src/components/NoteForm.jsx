@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import TagSelector from "./TagSelector";
+import SourceSelector from "./SourceSelector";
 
 const NoteForm = () => {
   const [searchParams] = useSearchParams();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+
   const [source, setSource] = useState("");
+  const [sourceOptions, setSourceOptions] = useState([]);
+  const [sourceSelector, setSourceSelector] = useState();
+
   const [tags, setTags] = useState([]);
   const [currentTag, setCurrentTag] = useState("");
   const [tagOptions, setTagOptions] = useState([]);
@@ -23,6 +28,7 @@ const NoteForm = () => {
 
   useEffect(() => {
     fetchTagOptions();
+    fetchSourceOptions();
   }, []);
 
   useEffect(() => {
@@ -41,6 +47,31 @@ const NoteForm = () => {
     const response = await fetch("http://localhost:5000/tags");
     const data = await response.json();
     setTagOptions(data.tags);
+  };
+
+  const fetchSourceOptions = async () => {
+    const response = await fetch("http://localhost:5000/sources");
+    const data = await response.json();
+    setSourceOptions(data.sources);
+  };
+
+  useEffect(() => {
+    let sourceSelect;
+    if (sourceOptions && sourceOptions.length > 0) {
+      console.log(sourceOptions);
+      sourceSelect = (
+        <SourceSelector
+          sourceOptions={sourceOptions}
+          currentSource={source}
+          onSourceChange={handleSourceChange}
+        />
+      );
+    }
+    setSourceSelector(sourceSelect);
+  }, [sourceOptions]);
+
+  const handleSourceChange = (newSource) => {
+    setSource(newSource);
   };
 
   const fetchPassage = async () => {
@@ -172,16 +203,21 @@ const NoteForm = () => {
               />
             </div>
             <div className="col-span-3">
-              <label htmlFor="source" className="mb-1">
-                Source:
-              </label>
-              <input
-                type="text"
-                id="source"
-                value={source ?? ""}
-                onChange={(e) => setSource(e.target.value)}
-                className="border rounded ml-2 p-2"
-              />
+              <div className="flex">
+                <label htmlFor="source" className="mb-1">
+                  Source:
+                </label>
+                <span className="ml-2">{sourceSelector}</span>
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    id="source"
+                    value={source ?? ""}
+                    onChange={(e) => setSource(e.target.value)}
+                    className="border rounded ml-2 p-2"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div className="flex">
